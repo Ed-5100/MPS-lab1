@@ -31,9 +31,15 @@ int main(void)
     char choice;
 	char in[3];
     int size = 3;
-
-    printf("\033[2J\033[;H"); // Erase screen & move cursor to home position
+    printf("\033[0;33;44m\033[?25l");
+    fflush(stdout);
+    printf("\033[2J\033[2;15H"); // Erase screen & move cursor to home position
     fflush(stdout); // Need to flush stdout after using printf that doesn't end in \n
+    printf("PRESS <ESC> OR <CTL>+[ TO QUIT\n");
+    printf("\033[12;H\033[s");
+    fflush(stdout);
+    printf("\033[12;24r");
+    fflush(stdout);
     //printf("Test of the printf() function.\n\n");
 
     // Need to enable clock for peripheral bus on GPIO Port J
@@ -71,11 +77,39 @@ int main(void)
 //        choice = uart_getchar(&USB_UART, 1);
     	choice = getchar();
 //    	putchar(choice);
-    	printf("\033[2J\033[;H");
-    	fflush(stdout);
-    	printf("The keyboard character is %c.", choice);
-    	fflush(stdout);
-
+    	if(choice=='\e'){
+    		printf("\033[2J\033[;H");
+    		fflush(stdout);
+    		printf("<ESC pressed, program halted>");
+    		fflush(stdout);
+    		break;
+    	}
+    	if(isprint(choice)){
+			printf("\033[6;H\033[K");
+			fflush(stdout);
+			printf("The keyboard character is ");
+			fflush(stdout);
+			printf("\033[31m");
+			fflush(stdout);
+			putchar(choice);
+			fflush(stdout);
+			printf("\033[33m");
+    	} else {
+    		printf("\033[u\033[5m");
+    		fflush(stdout);
+    		printf("The keyboard character $%02x is ",choice);
+    		fflush(stdout);
+    		printf("\033[4;5m");
+    		fflush(stdout);
+    		printf("'not printable'");
+    		fflush(stdout);
+    		printf("\033[0;5;33;44m");
+    		fflush(stdout);
+    		printf(".\r\n");
+    		fflush(stdout);
+    		printf("\033[s\033[0;33;44m");
+    		fflush(stdout);
+    	}
 // Messing around with stuff:
 //        putchar('9'); // Putchar is weird, man.
 //				choice = uart_getchar(&USB_UART, 0);
