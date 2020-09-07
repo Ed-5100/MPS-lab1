@@ -1,5 +1,5 @@
-"src/hello.o"
 "src/init.o"
+"src/main.o"
 "src/uart.o"
 "startup/startup_stm32f769nihx.o"
 "stm32lib/CMSIS/Device/ST/STM32F7xx/Source/Templates/system_stm32f7xx.o"

@@ -16,9 +16,9 @@
 // Includes
 //------------------------------------------------------------------------------------
 #include "stm32f769xx.h"
-#include "hello.h"
-
 #include<stdint.h>
+#include <ctype.h>
+#include <main.h>
 
 
 //------------------------------------------------------------------------------------
@@ -27,7 +27,7 @@
 int main(void)
 {
     Sys_Init(); // This always goes at the top of main (defined in init.c)
-
+    int task=2;
     char choice;
 	char in[3];
     int size = 3;
@@ -40,15 +40,16 @@ int main(void)
     fflush(stdout);
     printf("\033[12;24r");
     fflush(stdout);
+    gpio_hal_init();
     //printf("Test of the printf() function.\n\n");
 
     // Need to enable clock for peripheral bus on GPIO Port J
-    __HAL_RCC_GPIOJ_CLK_ENABLE(); 	// Through HAL
-    RCC->AHB1ENR |= RCC_AHB1ENR_GPIOJEN; // or through registers
+
+    //RCC->AHB1ENR |= RCC_AHB1ENR_GPIOJEN; // or through registers
     //// Below two lines are example on how to access a register by knowing it's memory address
     //volatile uint32_t * RCC_AHB1_CLOCK_ENABLE = (uint32_t*) 0x40023830U; // Enable clock for peripheral bus on GPIO Port J
     //*RCC_AHB1_CLOCK_ENABLE |= 512U; // Bitmask for RCC AHB1 initialization: 0x00000200U or 512U in decimal
-
+/*
     GPIOJ->MODER |= 1024U; //Bitmask for GPIO J Pin 5 initialization (set it to Output mode): 0x00000400U or 1024U in decimal
     GPIOJ->BSRR = (uint16_t)GPIO_PIN_5; // Turn on Green LED (LED2)
     GPIOJ->BSRR = (uint32_t)GPIO_PIN_5 << 16; // Turn off Green LED (LED2)
@@ -60,31 +61,36 @@ int main(void)
 
     volatile uint32_t * GREENLEDBSRR = (uint32_t*) 0x40022418U; // Address of GPIO J Bit Set/Reset Register
     *GREENLEDBSRR = (uint16_t)0x0020U; // Turn on Green LED (LED2)
-
-    HAL_Delay(1000); // Pause for a second
+*/
+    //HAL_Delay(1000); // Pause for a second
 
 //    volatile uint32_t * GREENLEDODR = (uint32_t*) 0x40022414U; // Address of GPIO J Output Data Register
 //    *GREENLEDODR ^= (uint16_t)0x0020U; // Toggle Green LED (LED2)
 
     while(1)
     {
-
+    	if(task==2){
+        	update_led();
+        	continue;
+    	}
+    	update_led();
+    	continue;
 //        printf("Hello World!\r\n\n");
 //        printf("( Welcome to Microprocessor Systems )\r\n\n\n");
 //        printf("1=repeat, 2=clear, 0=quit.\r\n\n"); // Menu of choices
 				// Don't forget to end printf with newline or run fflush(stdout) after it!
 
 //        choice = uart_getchar(&USB_UART, 1);
-    	choice = getchar();
+		choice = getchar();
 //    	putchar(choice);
-    	if(choice=='\e'){
-    		printf("\033[2J\033[;H");
-    		fflush(stdout);
-    		printf("<ESC pressed, program halted>");
-    		fflush(stdout);
-    		break;
-    	}
-    	if(isprint(choice)){
+		if(choice=='\e'){
+			printf("\033[2J\033[;H");
+			fflush(stdout);
+			printf("<ESC pressed, program halted>");
+			fflush(stdout);
+			break;
+		}
+		if(isprint(choice)){
 			printf("\033[6;H\033[K");
 			fflush(stdout);
 			printf("The keyboard character is ");
@@ -94,22 +100,24 @@ int main(void)
 			putchar(choice);
 			fflush(stdout);
 			printf("\033[33m");
-    	} else {
-    		printf("\033[u\033[5m");
-    		fflush(stdout);
-    		printf("The keyboard character $%02x is ",choice);
-    		fflush(stdout);
-    		printf("\033[4;5m");
-    		fflush(stdout);
-    		printf("'not printable'");
-    		fflush(stdout);
-    		printf("\033[0;5;33;44m");
-    		fflush(stdout);
-    		printf(".\r\n");
-    		fflush(stdout);
-    		printf("\033[s\033[0;33;44m");
-    		fflush(stdout);
-    	}
+		} else {
+			printf("\033[u\033[5m");
+			fflush(stdout);
+			printf("The keyboard character $%02x is ",choice);
+			fflush(stdout);
+			printf("\033[4;5m");
+			fflush(stdout);
+			printf("'not printable'");
+			fflush(stdout);
+			printf("\033[0;5;33;44m");
+			fflush(stdout);
+			printf(".\r\n");
+			fflush(stdout);
+			printf("\033[s\033[0;33;44m");
+			fflush(stdout);
+		}
+
+
 // Messing around with stuff:
 //        putchar('9'); // Putchar is weird, man.
 //				choice = uart_getchar(&USB_UART, 0);
@@ -145,6 +153,44 @@ int main(void)
 				printf("\r\nuart_getline result: %d\r\n", a);*/
 	}
 }
+
+void gpio_hal_init(){
+	//led pj13 pj5 pa12 pd4
+	__HAL_RCC_GPIOJ_CLK_ENABLE(); 	// Through HAL
+	__HAL_RCC_GPIOA_CLK_ENABLE();
+	__HAL_RCC_GPIOD_CLK_ENABLE();
+	__HAL_RCC_GPIOC_CLK_ENABLE();
+	__HAL_RCC_GPIOF_CLK_ENABLE();
+	GPIO_InitTypeDef* config = (GPIO_InitTypeDef*)malloc(sizeof(GPIO_InitTypeDef));
+	config->Mode=GPIO_MODE_OUTPUT_PP;
+	config->Pin=GPIO_PIN_13|GPIO_PIN_5;
+	config->Pull=GPIO_PULLUP ;
+	config->Speed=GPIO_SPEED_FREQ_HIGH;
+	HAL_GPIO_Init(GPIOJ, config);
+	config->Pin=GPIO_PIN_12;
+	HAL_GPIO_Init(GPIOA, config);
+	config->Pin=GPIO_PIN_4;
+	HAL_GPIO_Init(GPIOD, config);
+
+	//input pc7 pc6 pj1 pf6
+	config->Mode=GPIO_MODE_INPUT;
+	config->Pin=GPIO_PIN_7|GPIO_PIN_6;
+	HAL_GPIO_Init(GPIOC, config);
+	config->Pin=GPIO_PIN_1;
+	HAL_GPIO_Init(GPIOJ, config);
+	config->Pin=GPIO_PIN_6;
+	HAL_GPIO_Init(GPIOF, config);
+	//HAL_GPIO_WritePin(GPIOC, GPIO_PIN_3, GPIO_PIN_RESET);
+}
+
+void update_led(){
+	HAL_GPIO_WritePin(GPIOJ, GPIO_PIN_13, HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_7));
+	HAL_GPIO_WritePin(GPIOJ, GPIO_PIN_5, HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_6));
+	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_12, HAL_GPIO_ReadPin(GPIOJ, GPIO_PIN_1));
+	HAL_GPIO_WritePin(GPIOD, GPIO_PIN_4, HAL_GPIO_ReadPin(GPIOF, GPIO_PIN_6)==GPIO_PIN_SET?GPIO_PIN_RESET:GPIO_PIN_SET);
+	//HAL_GPIO_TogglePin(GPIOD, GPIO_PIN_4);
+}
+
 
 //------------------------------------------------------------------------------------
 //Extra thing to consider...

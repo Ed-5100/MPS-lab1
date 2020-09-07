@@ -1,4 +1,6 @@
-src/hello.o: ../src/hello.c \
+src/hello.o: ../src/hello.cpp \
+ C:/Users/xieyu/Documents/Microprocessor/lab1/inc/hello.h \
+ C:/Users/xieyu/Documents/Microprocessor/lab1/inc/init.h \
  C:/Users/xieyu/Documents/Microprocessor/stm32lib/CMSIS/Device/ST/STM32F7xx/Include/stm32f769xx.h \
  C:/Users/xieyu/Documents/Microprocessor/stm32lib/CMSIS/Include/core_cm7.h \
  C:/Users/xieyu/Documents/Microprocessor/stm32lib/CMSIS/Include/cmsis_version.h \
@@ -6,8 +8,6 @@ src/hello.o: ../src/hello.c \
  C:/Users/xieyu/Documents/Microprocessor/stm32lib/CMSIS/Include/cmsis_gcc.h \
  C:/Users/xieyu/Documents/Microprocessor/stm32lib/CMSIS/Include/mpu_armv7.h \
  C:/Users/xieyu/Documents/Microprocessor/stm32lib/CMSIS/Device/ST/STM32F7xx/Include/system_stm32f7xx.h \
- C:/Users/xieyu/Documents/Microprocessor/lab1/inc/hello.h \
- C:/Users/xieyu/Documents/Microprocessor/lab1/inc/init.h \
  C:/Users/xieyu/Documents/Microprocessor/stm32lib/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal.h \
  C:/Users/xieyu/Documents/Microprocessor/lab1/inc/stm32f7xx_hal_conf.h \
  C:/Users/xieyu/Documents/Microprocessor/stm32lib/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_rcc.h \
@@ -29,6 +29,10 @@ src/hello.o: ../src/hello.c \
  C:/Users/xieyu/Documents/Microprocessor/stm32lib/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_uart_ex.h \
  C:/Users/xieyu/Documents/Microprocessor/lab1/inc/uart.h
 
+C:/Users/xieyu/Documents/Microprocessor/lab1/inc/hello.h:
+
+C:/Users/xieyu/Documents/Microprocessor/lab1/inc/init.h:
+
 C:/Users/xieyu/Documents/Microprocessor/stm32lib/CMSIS/Device/ST/STM32F7xx/Include/stm32f769xx.h:
 
 C:/Users/xieyu/Documents/Microprocessor/stm32lib/CMSIS/Include/core_cm7.h:
@@ -42,10 +46,6 @@ C:/Users/xieyu/Documents/Microprocessor/stm32lib/CMSIS/Include/cmsis_gcc.h:
 C:/Users/xieyu/Documents/Microprocessor/stm32lib/CMSIS/Include/mpu_armv7.h:
 
 C:/Users/xieyu/Documents/Microprocessor/stm32lib/CMSIS/Device/ST/STM32F7xx/Include/system_stm32f7xx.h:
-
-C:/Users/xieyu/Documents/Microprocessor/lab1/inc/hello.h:
-
-C:/Users/xieyu/Documents/Microprocessor/lab1/inc/init.h:
 
 C:/Users/xieyu/Documents/Microprocessor/stm32lib/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal.h:
 
