@@ -20,9 +20,12 @@
 // Function Prototypes
 //------------------------------------------------------------------------------------
 void serial_print_things(void);
+void task12_init();
 void gpio_hal_init();
-void update_led();
+void task3_hal_update_led();
+void task4_init();
 
+int task12_update_screen();
 
 //------------------------------------------------------------------------------------
 // Global Variables

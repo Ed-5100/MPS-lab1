@@ -15,10 +15,22 @@
 //------------------------------------------------------------------------------------
 // Includes
 //------------------------------------------------------------------------------------
+#ifdef __cplusplus
+	extern "C"{
+#endif
 #include "stm32f769xx.h"
 #include<stdint.h>
 #include <ctype.h>
+#include <init.h>
+#ifdef __cplusplus
+	}
+#endif
 #include <main.h>
+#include <iostream>
+#include <fstream>
+#include <vector>
+using namespace std;
+
 
 
 //------------------------------------------------------------------------------------
@@ -27,20 +39,18 @@
 int main(void)
 {
     Sys_Init(); // This always goes at the top of main (defined in init.c)
-    int task=2;
-    char choice;
+    int task=4;
+    int halt=0;
 	char in[3];
     int size = 3;
-    printf("\033[0;33;44m\033[?25l");
-    fflush(stdout);
-    printf("\033[2J\033[2;15H"); // Erase screen & move cursor to home position
-    fflush(stdout); // Need to flush stdout after using printf that doesn't end in \n
-    printf("PRESS <ESC> OR <CTL>+[ TO QUIT\n");
-    printf("\033[12;H\033[s");
-    fflush(stdout);
-    printf("\033[12;24r");
-    fflush(stdout);
+    vector<vector<int>> maze;
+
     gpio_hal_init();
+    switch(task){
+    case 12: task12_init(); break;
+    case 4: task4_init();
+    }
+
     //printf("Test of the printf() function.\n\n");
 
     // Need to enable clock for peripheral bus on GPIO Port J
@@ -69,53 +79,19 @@ int main(void)
 
     while(1)
     {
-    	if(task==2){
-        	update_led();
-        	continue;
+
+    	switch(task){
+    	case 12: halt=task12_update_screen(); break;
+    	case 3: task3_hal_update_led(); break;
     	}
-    	update_led();
-    	continue;
+    	if(halt) break;
 //        printf("Hello World!\r\n\n");
 //        printf("( Welcome to Microprocessor Systems )\r\n\n\n");
 //        printf("1=repeat, 2=clear, 0=quit.\r\n\n"); // Menu of choices
 				// Don't forget to end printf with newline or run fflush(stdout) after it!
 
 //        choice = uart_getchar(&USB_UART, 1);
-		choice = getchar();
-//    	putchar(choice);
-		if(choice=='\e'){
-			printf("\033[2J\033[;H");
-			fflush(stdout);
-			printf("<ESC pressed, program halted>");
-			fflush(stdout);
-			break;
-		}
-		if(isprint(choice)){
-			printf("\033[6;H\033[K");
-			fflush(stdout);
-			printf("The keyboard character is ");
-			fflush(stdout);
-			printf("\033[31m");
-			fflush(stdout);
-			putchar(choice);
-			fflush(stdout);
-			printf("\033[33m");
-		} else {
-			printf("\033[u\033[5m");
-			fflush(stdout);
-			printf("The keyboard character $%02x is ",choice);
-			fflush(stdout);
-			printf("\033[4;5m");
-			fflush(stdout);
-			printf("'not printable'");
-			fflush(stdout);
-			printf("\033[0;5;33;44m");
-			fflush(stdout);
-			printf(".\r\n");
-			fflush(stdout);
-			printf("\033[s\033[0;33;44m");
-			fflush(stdout);
-		}
+
 
 
 // Messing around with stuff:
@@ -152,6 +128,59 @@ int main(void)
 				int a = uart_getline(&USB_UART, in, size);
 				printf("\r\nuart_getline result: %d\r\n", a);*/
 	}
+    return 0;
+}
+
+void task12_init(){
+    printf("\033[0;33;44m\033[?25l");
+    fflush(stdout);
+    printf("\033[2J\033[2;15H"); // Erase screen & move cursor to home position
+    fflush(stdout); // Need to flush stdout after using printf that doesn't end in \n
+    printf("PRESS <ESC> OR <CTL>+[ TO QUIT\n");
+    printf("\033[12;H\033[s");
+    fflush(stdout);
+    printf("\033[12;24r");
+    fflush(stdout);
+}
+
+int task12_update_screen(){
+	char choice;
+	choice = getchar();
+//    	putchar(choice);
+	if(choice=='\e'){
+		printf("\033[2J\033[;H");
+		fflush(stdout);
+		printf("<ESC pressed, program halted>");
+		fflush(stdout);
+		return 1;
+	}
+	if(isprint(choice)){
+		printf("\033[6;H\033[K");
+		fflush(stdout);
+		printf("The keyboard character is ");
+		fflush(stdout);
+		printf("\033[31m");
+		fflush(stdout);
+		putchar(choice);
+		fflush(stdout);
+		printf("\033[33m");
+	} else {
+		printf("\033[u\033[5m");
+		fflush(stdout);
+		printf("The keyboard character $%02x is ",choice);
+		fflush(stdout);
+		printf("\033[4;5m");
+		fflush(stdout);
+		printf("'not printable'");
+		fflush(stdout);
+		printf("\033[0;5;33;44m");
+		fflush(stdout);
+		printf(".\r\n");
+		fflush(stdout);
+		printf("\033[s\033[0;33;44m");
+		fflush(stdout);
+	}
+	return 0;
 }
 
 void gpio_hal_init(){
@@ -161,7 +190,7 @@ void gpio_hal_init(){
 	__HAL_RCC_GPIOD_CLK_ENABLE();
 	__HAL_RCC_GPIOC_CLK_ENABLE();
 	__HAL_RCC_GPIOF_CLK_ENABLE();
-	GPIO_InitTypeDef* config = (GPIO_InitTypeDef*)malloc(sizeof(GPIO_InitTypeDef));
+	GPIO_InitTypeDef* config = new GPIO_InitTypeDef;
 	config->Mode=GPIO_MODE_OUTPUT_PP;
 	config->Pin=GPIO_PIN_13|GPIO_PIN_5;
 	config->Pull=GPIO_PULLUP ;
@@ -180,10 +209,13 @@ void gpio_hal_init(){
 	HAL_GPIO_Init(GPIOJ, config);
 	config->Pin=GPIO_PIN_6;
 	HAL_GPIO_Init(GPIOF, config);
-	//HAL_GPIO_WritePin(GPIOC, GPIO_PIN_3, GPIO_PIN_RESET);
+	HAL_GPIO_WritePin(GPIOJ, GPIO_PIN_13, GPIO_PIN_RESET);
+	HAL_GPIO_WritePin(GPIOJ, GPIO_PIN_5, GPIO_PIN_RESET);
+	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_12, GPIO_PIN_RESET);
+	HAL_GPIO_WritePin(GPIOD, GPIO_PIN_4, GPIO_PIN_SET);
 }
 
-void update_led(){
+void task3_hal_update_led(){
 	HAL_GPIO_WritePin(GPIOJ, GPIO_PIN_13, HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_7));
 	HAL_GPIO_WritePin(GPIOJ, GPIO_PIN_5, HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_6));
 	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_12, HAL_GPIO_ReadPin(GPIOJ, GPIO_PIN_1));
@@ -191,10 +223,25 @@ void update_led(){
 	//HAL_GPIO_TogglePin(GPIOD, GPIO_PIN_4);
 }
 
+void task4_init(){
 
+    FILE *file = fopen("./maze.txt", "r");
+    if(file == NULL)
+    {
+        printf("open error!\n");
+        return;
+    }
+    char c;
+    while((c = fgetc(file)) != EOF)
+    {
+        printf("%c", c);
+    }
+    fclose(file);
+}
 //------------------------------------------------------------------------------------
 //Extra thing to consider...
 //------------------------------------------------------------------------------------
+/*
 void serial_print_things(void) {
 	//Input Buffer
 	char input[2];
@@ -225,3 +272,4 @@ void serial_print_things(void) {
 
 	while(1);// HALT AND CATCH FIRE
 }
+*/

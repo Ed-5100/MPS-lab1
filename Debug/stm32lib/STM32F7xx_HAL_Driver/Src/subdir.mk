@@ -14,17 +14,6 @@ C:/Users/xieyu/Documents/Microprocessor/stm32lib/STM32F7xx_HAL_Driver/Src/stm32f
 C:/Users/xieyu/Documents/Microprocessor/stm32lib/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_tim.c \
 C:/Users/xieyu/Documents/Microprocessor/stm32lib/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_uart.c 
 
-OBJS += \
-./stm32lib/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal.o \
-./stm32lib/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_adc.o \
-./stm32lib/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_cortex.o \
-./stm32lib/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_gpio.o \
-./stm32lib/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_pwr.o \
-./stm32lib/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_pwr_ex.o \
-./stm32lib/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_rcc.o \
-./stm32lib/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_tim.o \
-./stm32lib/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_uart.o 
-
 C_DEPS += \
 ./stm32lib/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal.d \
 ./stm32lib/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_adc.d \
@@ -35,6 +24,17 @@ C_DEPS += \
 ./stm32lib/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_rcc.d \
 ./stm32lib/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_tim.d \
 ./stm32lib/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_uart.d 
+
+OBJS += \
+./stm32lib/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal.o \
+./stm32lib/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_adc.o \
+./stm32lib/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_cortex.o \
+./stm32lib/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_gpio.o \
+./stm32lib/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_pwr.o \
+./stm32lib/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_pwr_ex.o \
+./stm32lib/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_rcc.o \
+./stm32lib/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_tim.o \
+./stm32lib/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_uart.o 
 
 
 # Each subdirectory must supply rules for building sources it contributes

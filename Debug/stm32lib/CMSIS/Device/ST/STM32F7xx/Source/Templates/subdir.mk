@@ -6,11 +6,11 @@
 C_SRCS += \
 C:/Users/xieyu/Documents/Microprocessor/stm32lib/CMSIS/Device/ST/STM32F7xx/Source/Templates/system_stm32f7xx.c 
 
-OBJS += \
-./stm32lib/CMSIS/Device/ST/STM32F7xx/Source/Templates/system_stm32f7xx.o 
-
 C_DEPS += \
 ./stm32lib/CMSIS/Device/ST/STM32F7xx/Source/Templates/system_stm32f7xx.d 
+
+OBJS += \
+./stm32lib/CMSIS/Device/ST/STM32F7xx/Source/Templates/system_stm32f7xx.o 
 
 
 # Each subdirectory must supply rules for building sources it contributes
