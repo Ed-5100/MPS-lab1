@@ -15,16 +15,19 @@
 // Includes
 //------------------------------------------------------------------------------------
 #include "init.h" // Always need init.h, otherwise nothing will work.
-
+#include <vector>
+#include <string>
+using namespace std;
 //------------------------------------------------------------------------------------
 // Function Prototypes
 //------------------------------------------------------------------------------------
-void serial_print_things(void);
+
 void task12_init();
 void gpio_hal_init();
 void task3_hal_update_led();
-void task4_init();
-
+void task4_init(vector<string>& maze, pair<int,int>& posit);
+void task4_update(vector<string>& maze, pair<int,int> &posit,int reset[2]);
+void HAL_GPIO_EXTI_Callback (uint16_t GPIO_Pin);
 int task12_update_screen();
 
 //------------------------------------------------------------------------------------

@@ -1,16 +1,3 @@
-//------------------------------------------------------------------------------------
-// Hello.c
-//------------------------------------------------------------------------------------
-//
-// Test program to demonstrate serial port I/O.  This program writes a message on
-// the console using the printf() function, and reads characters using the getchar()
-// function.  An ANSI escape sequence is used to clear the screen if a '2' is typed.
-// A '1' repeats the message and the program responds to other input characters with
-// an appropriate message.
-//
-// Any valid keystroke turns on the green LED on the board; invalid entries turn it off
-//
-
 
 //------------------------------------------------------------------------------------
 // Includes
@@ -27,8 +14,9 @@
 #endif
 #include <main.h>
 #include <iostream>
-#include <fstream>
 #include <vector>
+#include <string>
+#include <utility>
 using namespace std;
 
 
@@ -39,43 +27,29 @@ using namespace std;
 int main(void)
 {
     Sys_Init(); // This always goes at the top of main (defined in init.c)
-    int task=4;
-    int halt=0;
-	char in[3];
-    int size = 3;
-    vector<vector<int>> maze;
-
-    gpio_hal_init();
-    switch(task){
+    int task=4;//value = 12, 3, 4
+    int halt=0;// task1 and 2 halt function
+    pair<int, int> posit(0, 1);// task4 current position
+    vector<string> maze={//maze for task4, ! is goal, * is current position
+    					"o*oooooooooooooooooooooo!oooo",
+					   	"o          ooo           oooo",
+						"oooooooo ooooo oooooooooooooo",
+						"o    o     o   oooooooooooooo",
+						"o o ooo oooo ooo           oo",
+						"o o        o ooooooooooooo oo",
+						"o oooooooooo           o o  o",
+						"o o   oo   ooooooooooo o oo o",
+						"o o o o  o ooooooooooo oooo o",
+						"o   o   oo                  o",
+						"ooooooooooooooooooooooooooooo",
+    };
+    int reset[2]={posit.first, posit.second};//original position for task 4
+    gpio_hal_init();//GPIO INIT though hal
+    switch(task){//task change
     case 12: task12_init(); break;
-    case 4: task4_init();
+    case 4: task4_init(maze,posit);
     }
 
-    //printf("Test of the printf() function.\n\n");
-
-    // Need to enable clock for peripheral bus on GPIO Port J
-
-    //RCC->AHB1ENR |= RCC_AHB1ENR_GPIOJEN; // or through registers
-    //// Below two lines are example on how to access a register by knowing it's memory address
-    //volatile uint32_t * RCC_AHB1_CLOCK_ENABLE = (uint32_t*) 0x40023830U; // Enable clock for peripheral bus on GPIO Port J
-    //*RCC_AHB1_CLOCK_ENABLE |= 512U; // Bitmask for RCC AHB1 initialization: 0x00000200U or 512U in decimal
-/*
-    GPIOJ->MODER |= 1024U; //Bitmask for GPIO J Pin 5 initialization (set it to Output mode): 0x00000400U or 1024U in decimal
-    GPIOJ->BSRR = (uint16_t)GPIO_PIN_5; // Turn on Green LED (LED2)
-    GPIOJ->BSRR = (uint32_t)GPIO_PIN_5 << 16; // Turn off Green LED (LED2)
-    GPIOJ->ODR ^= (uint16_t)GPIO_PIN_5; // Toggle LED2
-
-// It doesn't get lower level than this!
-//    volatile uint32_t * GREENLEDMODER = (uint32_t*) 0x40022400U; // Init GPIO J Pin 5 (LED2 with no Alt. func.) to Output
-//    *GREENLEDMODER |= 1024U; // Bitmask for GPIO J Pin 5 initialization: 0x00000400U or 1024U in decimal
-
-    volatile uint32_t * GREENLEDBSRR = (uint32_t*) 0x40022418U; // Address of GPIO J Bit Set/Reset Register
-    *GREENLEDBSRR = (uint16_t)0x0020U; // Turn on Green LED (LED2)
-*/
-    //HAL_Delay(1000); // Pause for a second
-
-//    volatile uint32_t * GREENLEDODR = (uint32_t*) 0x40022414U; // Address of GPIO J Output Data Register
-//    *GREENLEDODR ^= (uint16_t)0x0020U; // Toggle Green LED (LED2)
 
     while(1)
     {
@@ -83,58 +57,17 @@ int main(void)
     	switch(task){
     	case 12: halt=task12_update_screen(); break;
     	case 3: task3_hal_update_led(); break;
+    	case 4: task4_update(maze, posit,reset); break;
     	}
     	if(halt) break;
-//        printf("Hello World!\r\n\n");
-//        printf("( Welcome to Microprocessor Systems )\r\n\n\n");
-//        printf("1=repeat, 2=clear, 0=quit.\r\n\n"); // Menu of choices
-				// Don't forget to end printf with newline or run fflush(stdout) after it!
-
-//        choice = uart_getchar(&USB_UART, 1);
-
-
-
-// Messing around with stuff:
-//        putchar('9'); // Putchar is weird, man.
-//				choice = uart_getchar(&USB_UART, 0);
-//				uart_putchar(&USB_UART, &choice);
-//				puts("stuff\r\n");
-
-        // select which option to run
-//        HAL_GPIO_WritePin(GPIOJ, GPIO_PIN_5, GPIO_PIN_SET);         // Turn green LED on (GPIO_PIN_SET == 1)
-//        *GREENLEDBSRR = (uint16_t)0x0020U; // Turn on Green LED (LED2)
-/*
-        if (choice == '0')
-            return 1;
-        else if(choice == '1')
-            printf("\r\n\nHere we go again.\r\n\n");
-        else if(choice == '2')          // clear the screen with <ESC>[2J
-        {
-            printf("\033[2J\033[;H");
-            fflush(stdout);
-        }
-        else
-        {
-            // inform the user how bright he is
-            *GREENLEDBSRR = (uint32_t)0x0020U << 16; // Turn off Green LED (LED2)
-            printf("\r\nA \"");
-						putchar(choice);
-//						uart_print(&USB_UART, choice);
-            printf("\" is not a valid choice.\r\n\n");
-        }
-
-// Messing around with more stuff
-				printf("Enter an alphanumeric sequence (press <enter> if you want to send less than %d characters): \r\n", size + 1);
-				int a = uart_getline(&USB_UART, in, size);
-				printf("\r\nuart_getline result: %d\r\n", a);*/
 	}
     return 0;
 }
 
-void task12_init(){
+void task12_init(){//print out halt info
     printf("\033[0;33;44m\033[?25l");
     fflush(stdout);
-    printf("\033[2J\033[2;15H"); // Erase screen & move cursor to home position
+    printf("\033[2J\033[2;25H"); // Erase screen & move cursor to home position
     fflush(stdout); // Need to flush stdout after using printf that doesn't end in \n
     printf("PRESS <ESC> OR <CTL>+[ TO QUIT\n");
     printf("\033[12;H\033[s");
@@ -143,18 +76,18 @@ void task12_init(){
     fflush(stdout);
 }
 
-int task12_update_screen(){
+int task12_update_screen(){//update keyboard input
 	char choice;
 	choice = getchar();
 //    	putchar(choice);
-	if(choice=='\e'){
+	if(choice=='\e' || choice=='^['){//halt
 		printf("\033[2J\033[;H");
 		fflush(stdout);
 		printf("<ESC pressed, program halted>");
 		fflush(stdout);
 		return 1;
 	}
-	if(isprint(choice)){
+	if(isprint(choice)){//printable char
 		printf("\033[6;H\033[K");
 		fflush(stdout);
 		printf("The keyboard character is ");
@@ -164,7 +97,7 @@ int task12_update_screen(){
 		putchar(choice);
 		fflush(stdout);
 		printf("\033[33m");
-	} else {
+	} else {//unprintable char
 		printf("\033[u\033[5m");
 		fflush(stdout);
 		printf("The keyboard character $%02x is ",choice);
@@ -190,6 +123,7 @@ void gpio_hal_init(){
 	__HAL_RCC_GPIOD_CLK_ENABLE();
 	__HAL_RCC_GPIOC_CLK_ENABLE();
 	__HAL_RCC_GPIOF_CLK_ENABLE();
+	__HAL_RCC_GPIOE_CLK_ENABLE();
 	GPIO_InitTypeDef* config = new GPIO_InitTypeDef;
 	config->Mode=GPIO_MODE_OUTPUT_PP;
 	config->Pin=GPIO_PIN_13|GPIO_PIN_5;
@@ -213,9 +147,16 @@ void gpio_hal_init(){
 	HAL_GPIO_WritePin(GPIOJ, GPIO_PIN_5, GPIO_PIN_RESET);
 	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_12, GPIO_PIN_RESET);
 	HAL_GPIO_WritePin(GPIOD, GPIO_PIN_4, GPIO_PIN_SET);
+
+	//button pe0
+	config->Mode=GPIO_MODE_INPUT;
+	config->Pin=GPIO_PIN_0;
+	HAL_GPIO_Init(GPIOA, config);
+
+
 }
 
-void task3_hal_update_led(){
+void task3_hal_update_led(){//update leds based on inputs
 	HAL_GPIO_WritePin(GPIOJ, GPIO_PIN_13, HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_7));
 	HAL_GPIO_WritePin(GPIOJ, GPIO_PIN_5, HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_6));
 	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_12, HAL_GPIO_ReadPin(GPIOJ, GPIO_PIN_1));
@@ -223,53 +164,90 @@ void task3_hal_update_led(){
 	//HAL_GPIO_TogglePin(GPIOD, GPIO_PIN_4);
 }
 
-void task4_init(){
-
-    FILE *file = fopen("./maze.txt", "r");
-    if(file == NULL)
-    {
-        printf("open error!\n");
-        return;
-    }
-    char c;
-    while((c = fgetc(file)) != EOF)
-    {
-        printf("%c", c);
-    }
-    fclose(file);
-}
-//------------------------------------------------------------------------------------
-//Extra thing to consider...
-//------------------------------------------------------------------------------------
-/*
-void serial_print_things(void) {
-	//Input Buffer
-	char input[2];
-	input[0]=0;
-	input[1]=0;
-
-	//Initialize the system
-	Sys_Init();
-	initUart(&Second_UART, 9600, USART6); // Allow printing over USART6 (Arduino pins D0 - Rx and D1 - TX)
-	uart_print(&USB_UART, "\033[2J\033[;H");
-	uart_print(&Second_UART, "\033[2J\033[;H");
-	uart_print(&USB_UART, "Hello World: This is the USB Serial Connection\r\n");
-	uart_print(&Second_UART, "Hello World: This is the other UART Connection\r\n");
-	uart_print(&USB_UART, "In order to send newlines to this terminal,\r\n");
-	uart_print(&USB_UART, "Press <ESC> and type \"[20h\" (without quotes)\r\n");
-	uart_print(&USB_UART, "To get out of newline mode and back to line feed mode,\r\n");
-	uart_print(&USB_UART, "Press <ESC> and type \"[20l\" (without quotes)\r\n");
-	uart_print(&USB_UART, "\"Thanks for Playing!\"\r\n");
-
-	printf("THIS SENTENCE USES PRINTF!!!\r\n");
-  // Don't forget to end printf with newline or run fflush(stdout) after it!
-
-	while(1) {
-		input[0]=uart_getchar(&USB_UART, 0);
-		uart_print(&USB_UART, input);
-		uart_print(&Second_UART, input);
+void task4_init(vector<string>& maze, pair<int,int>& posit){//print out the maze
+	cout<<"\033[2J\033[;H"<<"\033[0;33;44m\033[?25l";
+	cout.flush();
+	for(int i=0;i<maze.size();i++){
+		cout<<maze[i]<<"\r"<<endl;
 	}
+	cout<<"\033["<<posit.first+1<<";"<<posit.second+1<<"H\033[31;1m";
+	cout.flush();
+	cout<<"*"<<endl;
 
-	while(1);// HALT AND CATCH FIRE
 }
-*/
+
+void task4_update(vector<string>& maze, pair<int,int>& posit, int reset[2]){//update location and deal with reset
+	if(HAL_GPIO_ReadPin(GPIOJ, GPIO_PIN_13)==GPIO_PIN_SET){//if finished
+		if(HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_0)==GPIO_PIN_SET){//if button pressed, reset every thing
+			HAL_GPIO_WritePin(GPIOJ, GPIO_PIN_13, GPIO_PIN_RESET);
+			cout<<"\033["<< posit.first+1<<";"<<posit.second+1<<"H\033[0;33;44m";
+			cout.flush();
+			cout<<"!"<<endl;
+			cout<<"\033[31;1m";
+			cout.flush();
+			posit.first=reset[0];
+			posit.second=reset[1];
+			cout<<"\033["<< posit.first+1<<";"<<posit.second+1<<"H";
+			cout.flush();
+			cout<<"*"<<endl;
+		}
+		return;
+	}
+	char direction= getchar();//wasd
+	switch(direction){
+	case 'w':
+		if(posit.first-1>=0 && maze[posit.first-1][posit.second]!='o'){
+			if(maze[posit.first-1][posit.second]=='!')
+				HAL_GPIO_WritePin(GPIOJ, GPIO_PIN_13, GPIO_PIN_SET);
+			cout<<"\033["<< posit.first+1<<";"<<posit.second+1<<"H";
+			cout.flush();
+			cout<<" "<<endl;
+			posit.first-=1;
+			cout<<"\033["<< posit.first+1<<";"<<posit.second+1<<"H";
+			cout.flush();
+			cout<<"*"<<endl;
+		}
+		break;
+	case 's':
+		if(posit.first+1<maze.size() && maze[posit.first+1][posit.second]!='o'){
+			if(maze[posit.first+1][posit.second]=='!')
+				HAL_GPIO_WritePin(GPIOJ, GPIO_PIN_13, GPIO_PIN_SET);
+			cout<<"\033["<< posit.first+1<<";"<<posit.second+1<<"H";
+			cout.flush();
+			cout<<" "<<endl;
+			posit.first+=1;
+			cout<<"\033["<< posit.first+1<<";"<<posit.second+1<<"H";
+			cout.flush();
+			cout<<"*"<<endl;
+		}
+		break;
+	case 'a':
+		if(posit.second-1>=0 && maze[posit.first][posit.second-1]!='o'){
+			if(maze[posit.first][posit.second-1]=='!')
+				HAL_GPIO_WritePin(GPIOJ, GPIO_PIN_13, GPIO_PIN_SET);
+			cout<<"\033["<< posit.first+1<<";"<<posit.second+1<<"H";
+			cout.flush();
+			cout<<" "<<endl;
+			posit.second-=1;
+			cout<<"\033["<< posit.first+1<<";"<<posit.second+1<<"H";
+			cout.flush();
+			cout<<"*"<<endl;
+		}
+		break;
+	case 'd':
+		if(posit.second+1<maze[0].length() && maze[posit.first][posit.second+1]!='o'){
+			if(maze[posit.first][posit.second+1]=='!')
+				HAL_GPIO_WritePin(GPIOJ, GPIO_PIN_13, GPIO_PIN_SET);
+			cout<<"\033["<< posit.first+1<<";"<<posit.second+1<<"H";
+			cout.flush();
+			cout<<" "<<endl;
+			posit.second+=1;
+			cout<<"\033["<< posit.first+1<<";"<<posit.second+1<<"H";
+			cout.flush();
+			cout<<"*"<<endl;
+		}
+		break;
+	}
+}
+
+
