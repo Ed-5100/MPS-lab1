@@ -27,7 +27,7 @@ using namespace std;
 int main(void)
 {
     Sys_Init(); // This always goes at the top of main (defined in init.c)
-    int task=4;//value = 12, 3, 4
+    int task=4;//value = 12, 31,32, 4
     int halt=0;// task1 and 2 halt function
     pair<int, int> posit(0, 1);// task4 current position
     vector<string> maze={//maze for task4, ! is goal, * is current position
@@ -47,6 +47,7 @@ int main(void)
     gpio_hal_init();//GPIO INIT though hal
     switch(task){//task change
     case 12: task12_init(); break;
+    case 32: task3_register_pin_set;break;
     case 4: task4_init(maze,posit);
     }
 
@@ -56,7 +57,8 @@ int main(void)
 
     	switch(task){
     	case 12: halt=task12_update_screen(); break;
-    	case 3: task3_hal_update_led(); break;
+    	case 31: task3_hal_update_led(); break;
+    	case 32: task3_register_update_led();break;
     	case 4: task4_update(maze, posit,reset); break;
     	}
     	if(halt) break;
@@ -162,6 +164,59 @@ void task3_hal_update_led(){//update leds based on inputs
 	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_12, HAL_GPIO_ReadPin(GPIOJ, GPIO_PIN_1));
 	HAL_GPIO_WritePin(GPIOD, GPIO_PIN_4, HAL_GPIO_ReadPin(GPIOF, GPIO_PIN_6)==GPIO_PIN_SET?GPIO_PIN_RESET:GPIO_PIN_SET);
 	//HAL_GPIO_TogglePin(GPIOD, GPIO_PIN_4);
+}
+
+void task3_register_pin_set(){
+		//led pj13(LD1) pj5(LD2) pa12(LD3) pd4(LD4)    input pc7(D0) pc6(D1) pj1(D2) pf6(D3)
+		__HAL_RCC_GPIOJ_CLK_ENABLE(); 	// Through HAL
+		__HAL_RCC_GPIOA_CLK_ENABLE();
+		__HAL_RCC_GPIOD_CLK_ENABLE();
+		__HAL_RCC_GPIOC_CLK_ENABLE();
+		__HAL_RCC_GPIOF_CLK_ENABLE();
+		RCC->AHB1ENR |= RCC_AHB1ENR_GPIOJEN;
+		GPIOJ->MODER |= 0x04000400; //Set PJ13&PJ5 as GPI/O, set PJ1 as input
+
+		RCC->AHB1ENR |= RCC_AHB1ENR_GPIOAEN;
+		GPIOA->MODER |= 0x01000000;//Set PA12 as GPI/O
+
+		RCC->AHB1ENR |= RCC_AHB1ENR_GPIODEN;
+		GPIOD->MODER |= 0x00000100;//Set PD4 as GPI/O
+
+
+		RCC->AHB1ENR |= RCC_AHB1ENR_GPIOCEN;
+		GPIOC->MODER |= 0x00000000;//Set PC6 as Input
+
+		RCC->AHB1ENR |= RCC_AHB1ENR_GPIOFEN;
+		GPIOF->MODER |= 0x00000000;//Set PF6 as input
+
+}
+
+void task3_register_update_led(){
+	if(GPIOC->IDR & (1<<7) ){
+	    GPIOJ->BSRR |=0x00002000;
+	}
+	else{
+	    GPIOJ->BSRR |=0x20000000;
+	}
+	if(GPIOC -> IDR & (1<<6)){
+	    GPIOJ->BSRR |=0x00000020;
+	}
+	else{
+	    GPIOJ->BSRR |=0x00200000;
+	}
+	if(GPIOJ -> IDR & (1<<1)){
+	    GPIOA->BSRR |=0x00001000;
+	}
+	else{
+	    GPIOA->BSRR |=0x10000000;
+	}
+	if(GPIOF -> IDR & (1<<6)){
+	   GPIOD->BSRR |=0x00100000;
+	 }
+	else{
+	    GPIOD->BSRR |=0x00000010;
+	 }
+
 }
 
 void task4_init(vector<string>& maze, pair<int,int>& posit){//print out the maze

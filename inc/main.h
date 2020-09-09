@@ -29,6 +29,8 @@ void task4_init(vector<string>& maze, pair<int,int>& posit);
 void task4_update(vector<string>& maze, pair<int,int> &posit,int reset[2]);
 void HAL_GPIO_EXTI_Callback (uint16_t GPIO_Pin);
 int task12_update_screen();
+void task3_register_pin_set();
+void task3_register_update_led();
 
 //------------------------------------------------------------------------------------
 // Global Variables
