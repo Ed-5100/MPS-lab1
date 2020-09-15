@@ -27,7 +27,7 @@ using namespace std;
 int main(void)
 {
     Sys_Init(); // This always goes at the top of main (defined in init.c)
-    int task=12;//value = 12, 31,32, 4
+    int task=31;//value = 12, 31,32, 4
     int halt=0;// task1 and 2 halt function
     pair<int, int> posit(0, 1);// task4 current position
     vector<string> maze={//maze for task4, ! is goal, * is current position
@@ -44,11 +44,13 @@ int main(void)
 						"ooooooooooooooooooooooooooooo",
     };
     int reset[2]={posit.first, posit.second};//original position for task 4
-    gpio_hal_init();//GPIO INIT though hal
+    gpio_hal_init();//GPIO INIT though hal for task 3/hal and task4
     switch(task){//task change
     case 12: task12_init(); break;
-    case 32: task3_register_pin_set;break;
+    case 31: gpio_hal_init(); break;
+    case 32: task3_register_pin_set();break;
     case 4: task4_init(maze,posit);
+    		gpio_hal_init();
     }
 
 

@@ -1,14 +1,14 @@
 new:168:14:void* operator new(std::size_t, void*)	16	static
 gthr-default.h:229:1:int __gthread_key_delete(__gthread_key_t)	16	static
 main.cpp:27:5:int main()	376	static
-main.cpp:69:6:void task12_init()	8	static
-main.cpp:81:5:int task12_update_screen()	16	static
-main.cpp:123:6:void gpio_hal_init()	40	static
-main.cpp:163:6:void task3_hal_update_led()	8	static
-main.cpp:171:6:void task3_register_pin_set()	32	static
-main.cpp:196:6:void task3_register_update_led()	4	static
-main.cpp:224:6:void task4_init(std::vector<std::__cxx11::basic_string<char> >&, std::pair<int, int>&)	24	static
-main.cpp:236:6:void task4_update(std::vector<std::__cxx11::basic_string<char> >&, std::pair<int, int>&, int*)	40	static
+main.cpp:71:6:void task12_init()	8	static
+main.cpp:83:5:int task12_update_screen()	16	static
+main.cpp:125:6:void gpio_hal_init()	40	static
+main.cpp:165:6:void task3_hal_update_led()	8	static
+main.cpp:173:6:void task3_register_pin_set()	32	static
+main.cpp:198:6:void task3_register_update_led()	4	static
+main.cpp:226:6:void task4_init(std::vector<std::__cxx11::basic_string<char> >&, std::pair<int, int>&)	24	static
+main.cpp:238:6:void task4_update(std::vector<std::__cxx11::basic_string<char> >&, std::pair<int, int>&, int*)	40	static
 allocator.h:131:7:std::allocator< <template-parameter-1-1> >::allocator() [with _Tp = std::__cxx11::basic_string<char>]	16	static
 allocator.h:139:7:std::allocator< <template-parameter-1-1> >::~allocator() [with _Tp = std::__cxx11::basic_string<char>]	16	static
 initializer_list:75:7:constexpr const _E* std::initializer_list<_E>::begin() const [with _E = std::__cxx11::basic_string<char>]	16	static
@@ -48,6 +48,6 @@ stl_construct.h:97:5:void std::_Destroy(_Tp*) [with _Tp = std::__cxx11::basic_st
 new_allocator.h:129:7:__gnu_cxx::new_allocator<_Tp>::size_type __gnu_cxx::new_allocator<_Tp>::max_size() const [with _Tp = std::__cxx11::basic_string<char>]	16	static
 move.h:73:5:constexpr _Tp&& std::forward(typename std::remove_reference<_From>::type&) [with _Tp = const std::__cxx11::basic_string<char>&]	16	static
 stl_construct.h:74:5:) [with _T1 = std::__cxx11::basic_string<char>; _Args = {const std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&}]	24	static
-main.cpp:308:1:void __static_initialization_and_destruction_0(int, int)	16	static
-main.cpp:308:1:cpp)	8	static
-main.cpp:308:1:cpp)	8	static
+main.cpp:310:1:void __static_initialization_and_destruction_0(int, int)	16	static
+main.cpp:310:1:cpp)	8	static
+main.cpp:310:1:cpp)	8	static
