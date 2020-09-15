@@ -27,7 +27,7 @@ using namespace std;
 int main(void)
 {
     Sys_Init(); // This always goes at the top of main (defined in init.c)
-    int task=4;//value = 12, 31,32, 4
+    int task=12;//value = 12, 31,32, 4
     int halt=0;// task1 and 2 halt function
     pair<int, int> posit(0, 1);// task4 current position
     vector<string> maze={//maze for task4, ! is goal, * is current position
@@ -100,6 +100,8 @@ int task12_update_screen(){//update keyboard input
 		fflush(stdout);
 		printf("\033[33m");
 	} else {//unprintable char
+		//printf("\a");
+		fflush(stdout);
 		printf("\033[u\033[5m");
 		fflush(stdout);
 		printf("The keyboard character $%02x is ",choice);
