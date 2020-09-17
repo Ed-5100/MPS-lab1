@@ -27,7 +27,7 @@ using namespace std;
 int main(void)
 {
     Sys_Init(); // This always goes at the top of main (defined in init.c)
-    int task=12;//value = 12 for task1 and task2, 31 for task3 hal,32 for task3 register , 4 for task4
+    int task=4;//value = 12 for task1 and task2, 31 for task3 hal,32 for task3 register , 4 for task4
     int halt=0;// task1 and 2 halt function, indicate whether program is halted
     pair<int, int> posit(0, 1);// saving task4 current position in term of <y, x>
     vector<string> maze={//maze for task4, ! is goal, * is current position
