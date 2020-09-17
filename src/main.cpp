@@ -195,25 +195,25 @@ void task3_register_pin_set(){
 }
 
 void task3_register_update_led(){
-	if(GPIOC->IDR & (1<<7) ){
+	if(GPIOC->IDR & (1<<7) ){//Determine if D0 is HIGH or LOW and change status of LED1
 	    GPIOJ->BSRR |=0x00002000;
 	}
 	else{
 	    GPIOJ->BSRR |=0x20000000;
 	}
-	if(GPIOC -> IDR & (1<<6)){
+	if(GPIOC -> IDR & (1<<6)){//Determine if D1 is HIGH or LOW and change status of LED2
 	    GPIOJ->BSRR |=0x00000020;
 	}
 	else{
 	    GPIOJ->BSRR |=0x00200000;
 	}
-	if(GPIOJ -> IDR & (1<<1)){
+	if(GPIOJ -> IDR & (1<<1)){//Determine if D2 is HIGH or LOW and change status of LED3
 	    GPIOA->BSRR |=0x00001000;
 	}
 	else{
 	    GPIOA->BSRR |=0x10000000;
 	}
-	if(GPIOF -> IDR & (1<<6)){
+	if(GPIOF -> IDR & (1<<6)){//Determine if D3 is HIGH or LOW and change status of LED4 (invert logic)
 	   GPIOD->BSRR |=0x00100000;
 	 }
 	else{
